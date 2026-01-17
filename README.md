@@ -106,17 +106,9 @@ Configure as seguintes credenciais no n8n:
 
 Telegram
 
-Telegram Bot Token
-
 OpenWeather
 
-API Key
-
-Endpoint: https://api.openweathermap.org/data/2.5/weather
-
 Google Gemini
-
-API Key do Google AI Studio
 
 ## ⚙️ Configurações Importantes
 
