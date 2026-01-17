@@ -2,6 +2,13 @@
 
 O CeltaPreto é um bot de previsão do tempo desenvolvido no n8n, integrado ao Telegram, à API do OpenWeather e a um agente de IA (Google Gemini) para fornecer previsão do tempo + recomendações práticas personalizadas para o dia do usuário.
 
+## Na prática
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/40ee77e5-bb15-4bec-b47d-ef13665cba0b" width="250">
+  <img src="https://github.com/user-attachments/assets/8e910c72-9770-44d6-93fb-ab38c478b218" width="250">
+</p>
+
 O bot recebe o nome da cidade via Telegram e retorna:
 
 Temperatura atual
