@@ -1,0 +1,647 @@
+{
+  "name": "CeltaPreto",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        -48
+      ],
+      "id": "1d4137ea-beb0-4bb5-ab67-069ee941e3f1",
+      "name": "Telegram Trigger",
+      "webhookId": "696fb2b1-4e1e-4e98-9dad-f5897777ef92",
+      "credentials": {
+        "telegramApi": {
+          "id": "kGQTfTqP6nJs9Ks8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "713ba35f-c655-4d7b-9a3f-cb0e820ec452",
+              "name": "temp",
+              "value": "={{ $json.main.temp.round() }}",
+              "type": "number"
+            },
+            {
+              "id": "a5a1f94a-bb86-4f5c-847b-169742215c32",
+              "name": "weatherMain",
+              "value": "={{ $json.weather[0].main }}",
+              "type": "string"
+            },
+            {
+              "id": "2afee979-0f9f-4f44-af95-c2925013dc3c",
+              "name": "weatherDescription",
+              "value": "={{ $json.weather[0].description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1072,
+        -304
+      ],
+      "id": "2a7a9ec4-6219-416f-a1b2-6f1f094a32e3",
+      "name": "setTemp"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json.cityToApi }}"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            },
+            {
+              "name": "lang",
+              "value": "pt_br"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        624,
+        -144
+      ],
+      "id": "f3368556-a7cd-4029-8fa6-0290706319cd",
+      "name": "GetTemp",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "9Vw79d3ZSyaB1G3y",
+          "name": "OpenWeather"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=A temperatura é  {{ $json.temp }}, o clima está {{ $json.weatherMain }}, {{ $json.weatherDescription }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Você é um agente especialista em previsão do tempo e recomendações diárias.\n\nO usuário já recebeu a mensagem inicial abaixo e ela não deve ser repetida:\n\n🌤️ Olá! A temperatura está em {{ $('normalizeCityToHuman').item.json.cityToHuman }} e o clima está {{ $json.temp }}\nSeu papel é continuar a resposta, oferecendo recomendações práticas do que a pessoa deve fazer ao longo do dia, com base nas condições climáticas e na temperatura informadas.\n\nRegras de recomendação:\n\nSe estiver ensolarado:\nRecomende o uso de protetor solar, roupas leves e arejadas, além de manter boa hidratação.\n\nSe estiver frio:\nRecomende o uso de agasalhos adequados e roupas térmicas, se necessário.\n\nSe estiver chovendo:\nRecomende o uso de guarda-chuva ou capa de chuva e, se pertinente, optar por transporte adequado.\n\nSe houver combinação de condições (ex.: frio + chuva, calor + sol forte):\nAdapte as recomendações de forma coerente e útil.\n\nEstilo da resposta:\n\nLinguagem simples, amigável e natural\n\nTom acolhedor e focado em ajudar no dia a dia\n\nNão repetir informações já ditas na mensagem inicial\n\nResponder como uma continuação direta do texto anterior"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1296,
+        -400
+      ],
+      "id": "d4233c93-743b-4681-b34f-9dfce56a9154",
+      "name": "AI Agent",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        -176
+      ],
+      "id": "d92b4b51-852a-4015-848d-aa7cb341eeb7",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "mz7nmNKMxnj4wjd2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        400,
+        48
+      ],
+      "id": "bee7d0b5-e9ba-492b-85f9-749698d6f036",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2096,
+        -416
+      ],
+      "id": "1619083e-4fb7-4eb1-9398-c3d422854dfa",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "44326293-4b60-4d25-883f-a1372e473ebd",
+              "leftValue": "={{ $json.cod }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "2eb820eb-9f94-48ce-81fd-a81d01a5f0e0",
+              "leftValue": "={{ $json.main.temp }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "78773fb7-e114-4a73-b4c0-a4e7c16c42a1",
+              "leftValue": "={{ $json.weather[0].main }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "6333a756-269c-48da-a3d8-4ddde7aa4e44",
+              "leftValue": "={{ $json.weather[0].description }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        848,
+        -256
+      ],
+      "id": "4313605a-efc6-4fef-b7dd-2e8492da0be5",
+      "name": "VerifySuccessResponse"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=❌ Ops! Não consegui encontrar essa cidade.\n\nVerifique se o nome está correto e tente novamente 🙏\nDica: use apenas o nome da cidade, sem abreviações ou símbolos.\n\n📍 Exemplos válidos:\n\nSão Paulo,SP\n\nRio de Janeiro,RJ",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1072,
+        0
+      ],
+      "id": "9331ff89-ff27-4502-8aa4-760dd696e968",
+      "name": "SendErrorMessage",
+      "webhookId": "521d305f-a82f-4732-a894-b68ed472120f",
+      "credentials": {
+        "telegramApi": {
+          "id": "kGQTfTqP6nJs9Ks8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"generated_text\": {\n      \"type\": \"string\",\n      \"description\": \"Message generated by the processing\"\n    },\n    \"status\": {\n      \"type\": \"string\",\n      \"enum\": [\"success\", \"error\"],\n      \"description\": \"Status indicating whether the operation was successful or not\"\n    }\n  },\n  \"required\": [\"generated_text\", \"status\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1440,
+        -176
+      ],
+      "id": "1318fcb8-72c9-4f56-af6b-773ad6e1a165",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\n$input.item.json.cityToApi = $input.item.json.message.text\n    .toLowerCase()                         \n    .normalize('NFD')                      \n    .replace(/[\\u0300-\\u036f]/g, '')       \n    .trim()                                  \n    .replace(/\\s+/g, ' ')\n    .split(',')[0]\n  ;\n\n\n\nreturn $input.item;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -144
+      ],
+      "id": "7da0676f-7e20-45e6-8d62-7fb1180eb589",
+      "name": "normalizeCity"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const prepositions = ['de', 'do', 'da', 'dos', 'das', 'e'];\n\nconst input = $input.item.json.message.text.trim();\n\nconst parts = input.split(',');\nconst cityPart = parts[0];\nconst statePart = parts[1] ? parts[1].trim() : '';\n\nconst cityFormatted = cityPart\n    .toLowerCase()\n    .replace(/\\s+/g, ' ')\n    .split(' ')\n    .map((word, index) => {\n      if (index === 0 || !prepositions.includes(word)) {\n        return word.charAt(0).toUpperCase() + word.slice(1);\n      }\n      return word;\n    })\n    .join(' ');\n\n\n$input.item.json.cityToHuman = statePart \n    ? `${cityFormatted}, ${statePart.toUpperCase()}`\n    : cityFormatted;\n\nreturn $input.item;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -144
+      ],
+      "id": "88342682-0227-446d-8aab-b0645bf25ab0",
+      "name": "normalizeCityToHuman"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "60ef87c5-9681-4a6c-86c2-4e6be04e3b03",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "/start",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -48,
+        -48
+      ],
+      "id": "91731889-1a5b-446c-ab63-fdbab0c272f2",
+      "name": "verifyStart"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=👋 Olá! Bem-vindo(a) ao Bot de Previsão do Tempo ☀️🌧️\n\nEu te ajudo a saber como se preparar para o dia, com base na temperatura e nas condições climáticas da sua cidade.\n\n📍 Como usar:\n\nBasta enviar o nome da cidade\n\nEu te retorno a previsão e dicas práticas de roupas e cuidados\n\n💡 Exemplos:\n\nSão Paulo\n\nRio de Janeiro\n\nLisboa\n\nVamos lá? Me diga sua cidade 👇",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        176,
+        48
+      ],
+      "id": "58e457a0-8a47-4a81-9325-11968b565c2d",
+      "name": "sendStartMessage",
+      "webhookId": "521d305f-a82f-4732-a894-b68ed472120f",
+      "credentials": {
+        "telegramApi": {
+          "id": "kGQTfTqP6nJs9Ks8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        0
+      ],
+      "id": "ba2a2380-a4e7-463a-a0d1-99e6b0aae577",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "76d5df11-5ec5-404c-84d7-74fa980bab94",
+              "leftValue": "={{ $json.output.status }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1648,
+        -368
+      ],
+      "id": "e04efa03-d8f7-45fb-8883-8914e35c70ab",
+      "name": "verifyGeneretedText"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=🌤️ A temperatura em {{ $('normalizeCityToHuman').item.json.cityToHuman }} é de {{ $('setTemp').item.json.temp }}°C.\n\n{{ $json.output.generated_text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1872,
+        -416
+      ],
+      "id": "c36ef918-cd85-4e4f-9f21-b1b87d4b30e6",
+      "name": "SendSuccessMessage",
+      "webhookId": "521d305f-a82f-4732-a894-b68ed472120f",
+      "credentials": {
+        "telegramApi": {
+          "id": "kGQTfTqP6nJs9Ks8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=🌤️ A temperatura em {{ $('normalizeCityToHuman').item.json.cityToHuman }} é de {{ $('setTemp').item.json.temp }}°C.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1872,
+        -208
+      ],
+      "id": "7b3f825f-7e20-463e-aa18-b2e302e78de7",
+      "name": "SendFallbackSuccessMessage",
+      "webhookId": "521d305f-a82f-4732-a894-b68ed472120f",
+      "credentials": {
+        "telegramApi": {
+          "id": "kGQTfTqP6nJs9Ks8",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "verifyStart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetTemp": {
+      "main": [
+        [
+          {
+            "node": "VerifySuccessResponse",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SendErrorMessage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "setTemp": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "verifyGeneretedText",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SendFallbackSuccessMessage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VerifySuccessResponse": {
+      "main": [
+        [
+          {
+            "node": "setTemp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SendErrorMessage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendErrorMessage": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "normalizeCity": {
+      "main": [
+        [
+          {
+            "node": "GetTemp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "normalizeCityToHuman": {
+      "main": [
+        [
+          {
+            "node": "normalizeCity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verifyStart": {
+      "main": [
+        [
+          {
+            "node": "normalizeCityToHuman",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "sendStartMessage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sendStartMessage": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verifyGeneretedText": {
+      "main": [
+        [
+          {
+            "node": "SendSuccessMessage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SendFallbackSuccessMessage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendSuccessMessage": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "f1033aad-5d35-481e-8843-9935803f381f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "57652bc8f70a56d84314033850a15a703397e4f6b934cbe269096a330b625452"
+  },
+  "id": "Czvve3VTimjM4WKEAy9Mb",
+  "tags": []
+}
