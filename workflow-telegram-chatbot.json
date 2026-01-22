@@ -102,10 +102,10 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=A temperatura é  {{ $json.temp }}, o clima está {{ $json.weatherMain }}, {{ $json.weatherDescription }}",
+        "text": "=O usuário já recebeu a seguinte mensagem inicial e ela NÃO deve ser repetida:\n\n🌤️ Olá! A temperatura está em {{ $('normalizeCityToHuman').item.json.cityToHuman }} e o clima está {{ $json.temp }}\n\nContinue a resposta oferecendo recomendações práticas para o dia de hoje, com base nas condições climáticas informadas.\n\nSiga estas regras:\n- Se estiver ensolarado: recomende protetor solar, roupas leves e boa hidratação.\n- Se estiver frio: recomende agasalhos adequados e, se necessário, roupas térmicas.\n- Se estiver chovendo: recomende o uso de guarda-chuva ou capa de chuva e atenção ao transporte.\n- Se houver combinação de condições: adapte as recomendações de forma coerente.\n",
         "hasOutputParser": true,
         "options": {
-          "systemMessage": "=Você é um agente especialista em previsão do tempo e recomendações diárias.\n\nO usuário já recebeu a mensagem inicial abaixo e ela não deve ser repetida:\n\n🌤️ Olá! A temperatura está em {{ $('normalizeCityToHuman').item.json.cityToHuman }} e o clima está {{ $json.temp }}\nSeu papel é continuar a resposta, oferecendo recomendações práticas do que a pessoa deve fazer ao longo do dia, com base nas condições climáticas e na temperatura informadas.\n\nRegras de recomendação:\n\nSe estiver ensolarado:\nRecomende o uso de protetor solar, roupas leves e arejadas, além de manter boa hidratação.\n\nSe estiver frio:\nRecomende o uso de agasalhos adequados e roupas térmicas, se necessário.\n\nSe estiver chovendo:\nRecomende o uso de guarda-chuva ou capa de chuva e, se pertinente, optar por transporte adequado.\n\nSe houver combinação de condições (ex.: frio + chuva, calor + sol forte):\nAdapte as recomendações de forma coerente e útil.\n\nEstilo da resposta:\n\nLinguagem simples, amigável e natural\n\nTom acolhedor e focado em ajudar no dia a dia\n\nNão repetir informações já ditas na mensagem inicial\n\nResponder como uma continuação direta do texto anterior"
+          "systemMessage": "=Você é um agente especialista em previsão do tempo e recomendações diárias.\n\nSeu tom é simples, amigável, acolhedor e focado em ajudar no dia a dia.\n\nVocê sempre responde como uma continuação natural da mensagem anterior, sem repetir informações já apresentadas ao usuário, como cidade, clima ou temperatura.\n\nVocê oferece apenas recomendações práticas baseadas nas condições climáticas já informadas.\n\nNunca inicie a resposta com saudações (ex: “Olá”, “Bom dia”) e não reintroduza o contexto climático.\n"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -326,7 +326,7 @@
     {
       "parameters": {
         "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "=👋 Olá! Bem-vindo(a) ao Bot de Previsão do Tempo ☀️🌧️\n\nEu te ajudo a saber como se preparar para o dia, com base na temperatura e nas condições climáticas da sua cidade.\n\n📍 Como usar:\n\nBasta enviar o nome da cidade\n\nEu te retorno a previsão e dicas práticas de roupas e cuidados\n\n💡 Exemplos:\n\nSão Paulo\n\nRio de Janeiro\n\nLisboa\n\nVamos lá? Me diga sua cidade 👇",
+        "text": "=👋 Olá! Bem-vindo(a) ao Bot de Previsão do Tempo ☀️🌧️\n\nEu te ajudo a saber como se preparar para o dia, com base na temperatura e nas condições climáticas da sua cidade.\n\n📍 Como usar:\n\nBasta enviar o nome da cidade\n\nEu te retorno a previsão e dicas práticas de roupas e cuidados\n\n💡 Exemplos:\n\nSão Paulo, SP\n\nRio de Janeiro, RJ\n\nVamos lá? Me diga sua cidade 👇",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -632,12 +632,12 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "f1033aad-5d35-481e-8843-9935803f381f",
+  "versionId": "10b0bc9e-7835-4607-93b6-16aef20c2b60",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "57652bc8f70a56d84314033850a15a703397e4f6b934cbe269096a330b625452"
